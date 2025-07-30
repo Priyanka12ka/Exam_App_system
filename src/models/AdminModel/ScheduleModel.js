@@ -104,7 +104,7 @@ exports.deleteSchedule = (schedule_id) => {
 
 exports.searchScheduleByDate = (date) => {
     return new Promise((resolve, reject) => {
-        db.query = ("select * from schedule whwre date = ?" ,[date], (err, result) => {
+        db.query("select * from schedule where date = ?" ,[date], (err, result) => {
         
             if (err) {
                 reject(err.sqlMessage || "Database error");
