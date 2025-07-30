@@ -8,11 +8,11 @@ AdminRouter.post("/login", AdminController.adminLogin);
 
 
 Schedulerouter.post("/addschedule", Schedulercontroller.addSchedule);
-Schedulerouter.post("/getallschedule",Schedulercontroller.getAllSchedules);
-Schedulerouter.post("/getschedulebyid",Schedulercontroller.getScheduleById);
-Schedulerouter.post("/updateschedule",Schedulercontroller.updateSchedule);
-Schedulerouter.post("/deleteschedule", Schedulercontroller.deleteSchedule);
-Schedulerouter.post("/searchschedulebydate", Schedulercontroller.searchScheduleByDate);
+Schedulerouter.get("/getallschedule",Schedulercontroller.getAllSchedules);
+Schedulerouter.get("/getschedulebyid",Schedulercontroller.getScheduleById);
+Schedulerouter.put("/updateschedule",Schedulercontroller.updateSchedule);
+Schedulerouter.delete("/deleteschedule", Schedulercontroller.deleteSchedule);
+Schedulerouter.get("/searchschedulebydate", Schedulercontroller.searchScheduleByDate);
 
 
 module.exports ={ AdminRouter,Schedulerouter};
