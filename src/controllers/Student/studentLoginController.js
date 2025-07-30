@@ -25,3 +25,4 @@ exports.loginStudent = async(req, res) => {
     res.status(400).json({"msg":response.err})
   }
 };
+
