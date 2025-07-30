@@ -1,8 +1,10 @@
 const express = require("express");
 const AdminController = require("../controllers/Admin/Admin.js");
-const Schedulercontroller=require("../controllers/Admin/SchedulController.js")
+const Schedulercontroller=require("../controllers/Admin/SchedulController.js");
+const ExamController=require("../controllers/Admin/ExamController.js")
 const Schedulerouter=express.Router();
 const AdminRouter = express.Router();
+const ExamRouter=express.Router();
 
 AdminRouter.post("/login", AdminController.adminLogin);
 
@@ -14,5 +16,7 @@ Schedulerouter.put("/updateschedule",Schedulercontroller.updateSchedule);
 Schedulerouter.delete("/deleteschedule", Schedulercontroller.deleteSchedule);
 Schedulerouter.get("/searchschedulebydate", Schedulercontroller.searchScheduleByDate);
 
+ExamRouter.post("/examadd", ExamController.addExam);
+ExamRouter.get("/getallexam", ExamController.getAllExams);
 
-module.exports ={ AdminRouter,Schedulerouter};
+module.exports ={ AdminRouter,Schedulerouter,ExamRouter};
