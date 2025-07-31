@@ -21,3 +21,39 @@ exports.getAllExams = async (req, res) => {
         res.status(404).json({ msg: response.err });
     }
 };
+
+exports.getExamById = async (req, res) => {
+    const exam_id = req.body.exam_id;
+   
+    let response = await examModel.getExamById(exam_id);
+
+    if ("result" in response) {
+        res.status(200).json({ data: response.result });
+    } else {
+        res.status(404).json({ msg: response.err });
+    }
+};
+
+exports.updateExam = async (req, res) => {
+    const { exam_id, name, subject_id } = req.body;
+
+    const response = await examModel.updateExam(exam_id, name, subject_id);
+
+    if ("result" in response) {
+        res.status(200).json({ msg: response.result });
+    } else {
+        res.status(404).json({ msg: response.err });
+    }
+};
+
+exports.deleteExam = async (req, res) => {
+    const { exam_id } = req.body;
+
+    const response = await examModel.deleteExam(exam_id);
+
+    if ("result" in response) {
+        res.status(200).json({ msg: response.result });
+    } else {
+        res.status(404).json({ msg: response.err });
+    }
+};
