@@ -18,5 +18,8 @@ Schedulerouter.get("/searchschedulebydate", Schedulercontroller.searchScheduleBy
 
 ExamRouter.post("/examadd", ExamController.addExam);
 ExamRouter.get("/getallexam", ExamController.getAllExams);
+ExamRouter.get("/getexambyid", ExamController.getExamById );
+ExamRouter.put("/updateexam",ExamController.updateExam);
+ExamRouter.delete("/deleteexam",ExamController.deleteExam);
 
 module.exports ={ AdminRouter,Schedulerouter,ExamRouter};
