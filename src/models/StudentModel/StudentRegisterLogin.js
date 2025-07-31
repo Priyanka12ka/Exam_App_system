@@ -27,7 +27,7 @@ exports.registerStudent = (name, contact, email, username, password) => {
       }
       else {
         if (result.affectedRows > 0) {
-          resolve("inseredd data");
+          resolve("inserted add data");
         }
         else {
           reject("not registered");
