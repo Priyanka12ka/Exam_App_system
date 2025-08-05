@@ -3,15 +3,21 @@ const db = require("../../../db.js");
 exports.addSchedule = (title, date, start_time, end_time, duration_minutes, exam_id, subject_id) => {
     return new Promise((resolve, reject) => {
         db.query(
-            "INSERT INTO schedule VALUES('0', ?, ?, ?, ?, ?, ?, ?)", [title, date, start_time, end_time, duration_minutes, exam_id, subject_id],
+            "insert into schedule values('0', ?, ?, ?, ?, ?, ?, ?)",
+            [title, date, start_time, end_time, duration_minutes, exam_id, subject_id],
             (err, result) => {
                 if (err) {
-                    reject(err.sqlMessage || "Database error");
+                    // Check for foreign key constraint error
+                    if (err.code === "ER_NO_REFERENCED_ROW_2") {
+                        reject("Exam or Subject doesn't exist");
+                    } else {
+                        reject(err.sqlMessage || "Database Error");
+                    }
                 } else {
                     if (result.affectedRows > 0) {
-                        resolve("schedule inserted");
+                        resolve("Schedule inserted successfully");
                     } else {
-                        reject("Schedule not inserted");
+                        reject("Schedule not inserted due to unknown error");
                     }
                 }
             }
@@ -25,7 +31,7 @@ exports.addSchedule = (title, date, start_time, end_time, duration_minutes, exam
 
 exports.getAllSchedules = () => {
     return new Promise((resolve, reject) => {
-        db.query("SELECT * FROM schedule", (err, result) => {
+        db.query("select * from schedule", (err, result) => {
             if (err) {
                 reject(err.sqlMessage || "Database error");
             } else {

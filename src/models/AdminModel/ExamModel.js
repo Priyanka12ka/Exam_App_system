@@ -1,7 +1,7 @@
 const db=require("../../../db.js");
 exports.addExam = (name, subject_id) => {
     return new Promise((resolve, reject) => {
-        db.query("INSERT INTO exams (name, subject_id) VALUES (?, ?)", [name, subject_id], (err, result) => {
+        db.query("insert into exams (name, subject_id) values (?, ?)", [name, subject_id], (err, result) => {
             if (err) {
                 reject(err.sqlMessage || "Database error");
             } else {
@@ -17,7 +17,7 @@ exports.addExam = (name, subject_id) => {
 
 exports.getAllExams = () => {
     return new Promise((resolve, reject) => {
-        db.query("SELECT * FROM exams", (err, result) => {
+        db.query("select * from exams", (err, result) => {
             if (err) {
                 reject(err.sqlMessage || "Database error");
             } else if (result.length === 0) {

@@ -14,7 +14,6 @@ exports.addSchedule = async (req, res) => {
 
 }
 
-
 exports.getAllSchedules = async (req, res) => {
     let response = await scheduleModel.getAllSchedules();
 

@@ -2,7 +2,7 @@ const StudentModel = require("../../models/StudentModel/StudentRegisterLogin.js"
 
 exports.registerStudent = async (req, res) => {
   const { name, contact, email, username, password } = req.body;
-
+  
   let response=await StudentModel.registerStudent(name, contact, email, username, password);
   if("result" in response)
   {
@@ -16,6 +16,7 @@ exports.registerStudent = async (req, res) => {
 
 exports.loginStudent = async(req, res) => {
   const { username, password } = req.body;
+
     let response=await StudentModel.loginStudent( username, password);
   if("result" in response)
   {

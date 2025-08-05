@@ -1,10 +1,15 @@
 const express = require("express");
-const studentrouter = express.Router();
-
 const studentController = require("../controllers/Student/studentLoginController");
+const viewprofilecontroller = require("../controllers/Student/StudentProfile.js");
+const { verifystudent } = require("../../src/Middleware/StudentMiddleware.js");
 
-studentrouter.post("/register",studentController.registerStudent);
+const studentrouter = express.Router();
+const studentprofilerouter=express.Router();
+
+studentrouter.post("/register", studentController.registerStudent);
 studentrouter.post("/login", studentController.loginStudent);
 
 
-module.exports = studentrouter;
+studentprofilerouter.get("/view", verifystudent, viewprofilecontroller.viewprofile);
+
+module.exports = { studentrouter ,studentprofilerouter};
