@@ -61,6 +61,7 @@ exports.deleteSchedule = async (req, res) => {
     }
 };
 
+
 exports.searchScheduleByDate = async (req, res) => {
     const { date } = req.body;
 
@@ -72,4 +73,3 @@ exports.searchScheduleByDate = async (req, res) => {
         res.status(404).json({ msg: response.err });
     }
 };
-

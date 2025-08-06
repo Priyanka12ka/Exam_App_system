@@ -1,12 +1,14 @@
 const QuestionModel = require("../../models/AdminModel/QuesionModel.js");
 
 exports.addquestion = async (req, res) => {
-  const { exam_id, question_text, option1, option2, option3, option4, answer, mark } = req.body;
-  const response = await QuestionModel.addQuestion(exam_id, question_text, option1, option2, option3, option4, answer, mark);
+  const { subject_id, question_text, option1, option2, option3, option4, answer } = req.body;
+
+  const response = await QuestionModel.addQuestion(subject_id, question_text, option1, option2, option3, option4, answer);
+
   if ("result" in response) {
     res.status(201).json({ msg: response.result });
   } else {
-    if (response.err === "Exam  doesn't exist") {
+    if (response.err === "subject not found") {
       res.status(404).json({ msg: response.err });
     } else {
       res.status(400).json({ msg: response.err });
@@ -23,12 +25,11 @@ exports.getAllQuestions = async (req, res) => {
   }
 };
 
-
 exports.getQuestionById = async (req, res) => {
   const { question_id } = req.body;
 
   if (!question_id) {
-    return res.status(400).json({ msg: "Question ID is required" });
+    return res.status(400).json({ msg: "question_id is required" });
   }
 
   const response = await QuestionModel.getQuestionById(question_id);
@@ -41,38 +42,40 @@ exports.getQuestionById = async (req, res) => {
 };
 
 exports.updateQuestion = async (req, res) => {
-  const {question_id,question_text,option1, option2, option3, option4,answer,mark } = req.body;
+  const { question_id, question_text, option1, option2, option3, option4, answer} = req.body;
 
   if (!question_id) {
-    return res.status(400).json({ msg: "Valid Question ID is required" });
+    return res.status(400).json({ msg: "valid question_id is required" });
   }
 
-  const response = await QuestionModel.updateQuestion(question_id,question_text,option1, option2, option3, option4,answer,mark);
+  const response = await QuestionModel.updateQuestion(question_id, question_text, option1, option2, option3, option4, answer);
 
   if ("result" in response) {
-   return res.status(200).json({ msg: response.result });
+    return res.status(200).json({ msg: response.result });
   } else {
     return res.status(400).json({ msg: response.err });
   }
 };
-exports.deleteQuestion=async(req,res)=>{
- const{question_id}=req.body;
+
+exports.deleteQuestion = async (req, res) => {
+  const { question_id } = req.body;
+
   if (!question_id) {
-    return res.status(400).json({ msg: "Valid question_id is required" });
+    return res.status(400).json({ msg: "valid question_id is required" });
   }
-  const response=await QuestionModel.deleteQuestion(question_id);
-  if("result" in response)
-  {
-    return res.status(200).json({msg:response.result});
-  }
-  else{
-    return res.status(400).json({msg:response.err});
+
+  const response = await QuestionModel.deleteQuestion(question_id);
+
+  if ("result" in response) {
+    return res.status(200).json({ msg: response.result });
+  } else {
+    return res.status(400).json({ msg: response.err });
   }
 };
 
 exports.searchQuestionByName = async (req, res) => {
-  const {question_text} = req.body;
-  console.log(question_text);
+  const { question_text } = req.body;
+
   const response = await QuestionModel.searchQuestionByName(question_text);
 
   if ("result" in response) {

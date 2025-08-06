@@ -1,12 +1,12 @@
-const examModel=require("../../models/AdminModel/ExamModel.js");
+const examModel = require("../../models/AdminModel/ExamModel.js");
 
 exports.addExam = async (req, res) => {
-    const { name, subject_id } = req.body;
+    const { name, subject_id, question_set, total_marks, per_question_marks } = req.body;
 
-    let response = await examModel.addExam(name, subject_id);
+    let response = await examModel.addExam(name, subject_id, question_set, total_marks, per_question_marks);
 
     if ("result" in response) {
-        res.status(201).json({ msg: "Exam added successfully", exam_id: response.result });
+        res.status(201).json({ msg: "exam added successfully", exam_id: response.result });
     } else {
         res.status(400).json({ msg: response.err });
     }
@@ -23,8 +23,8 @@ exports.getAllExams = async (req, res) => {
 };
 
 exports.getExamById = async (req, res) => {
-    const exam_id = req.body.exam_id;
-   
+    const { exam_id } = req.body;
+
     let response = await examModel.getExamById(exam_id);
 
     if ("result" in response) {
@@ -35,9 +35,9 @@ exports.getExamById = async (req, res) => {
 };
 
 exports.updateExam = async (req, res) => {
-    const { exam_id, name, subject_id } = req.body;
+    const { exam_id, name, subject_id,question_set, total_marks, per_question_marks } = req.body;
 
-    const response = await examModel.updateExam(exam_id, name, subject_id);
+    let response = await examModel.updateExam(exam_id, name, subject_id,question_set, total_marks, per_question_marks);
 
     if ("result" in response) {
         res.status(200).json({ msg: response.result });
@@ -49,7 +49,7 @@ exports.updateExam = async (req, res) => {
 exports.deleteExam = async (req, res) => {
     const { exam_id } = req.body;
 
-    const response = await examModel.deleteExam(exam_id);
+    let response = await examModel.deleteExam(exam_id);
 
     if ("result" in response) {
         res.status(200).json({ msg: response.result });
