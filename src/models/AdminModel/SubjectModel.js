@@ -1,71 +1,73 @@
 const db = require("../../../db.js");
 
-exports.addSubject = (name) => {
+exports.addExam = (subject_id, total_marks, per_question_marks) => {
     return new Promise((resolve, reject) => {
-        db.query("insert into subjects (name) values (?)", [name], (err, result) => {
-            if (err) reject(err.sqlMessage || "database error");
-            else resolve("subject added successfully");
-        });
+        db.query("insert into exams (subject_id, total_marks, per_question_marks) values (?, ?, ?)",[subject_id, total_marks, per_question_marks],
+            (err, result) => {
+                if (err) reject(err.sqlMessage || "database error");
+                else resolve("exam added successfully");
+            }
+        );
     }).then(result => ({ result }))
         .catch(err => ({ err }));
 };
 
-exports.viewSubjects = () => {
+exports.viewExams = () => {
     return new Promise((resolve, reject) => {
-        db.query("select * from subjects", (err, result) => {
+        db.query("select * from exams", (err, result) => {
             if (err) reject(err.sqlMessage || "database error");
             else resolve(result);
         });
     }).then(result => ({ result }))
         .catch(err => ({ err }));
 };
-exports.getSubjectById = (subject_id) => {
+
+exports.getExamById = (exam_id) => {
     return new Promise((resolve, reject) => {
-        db.query("select *from subjects where subject_id=?", [subject_id], (err, result) => {
-            if (err) {
-                reject(err.sqlMessage || "database error");
-            }
-            else {
-                resolve(result)
-            }
+        db.query("select * from exams where exam_id = ?", [exam_id], (err, result) => {
+            if (err) reject(err.sqlMessage || "database error");
+            else resolve(result);
         });
     }).then(result => {
         if (result.length === 0) {
-            return { err: "No subject found with this id " };
+            return { err: "no exam found with this id" };
         } else {
             return { result };
         }
-    }).catch(err => {
-        return { err };
-    })
-}
+    }).catch(err => ({ err }));
+};
 
-exports.updateSubject = (subject_id, name) => {
+exports.updateExam = (exam_id, subject_id, total_marks, per_question_marks) => {
     return new Promise((resolve, reject) => {
-        db.query("update subjects set name = ? where subject_id = ?", [name, subject_id], (err, result) => {
+        db.query(
+            "update exams set subject_id = ?, total_marks = ?, per_question_marks = ? where exam_id = ?",
+            [subject_id, total_marks, per_question_marks, exam_id],
+            (err, result) => {
+                if (err) reject(err.sqlMessage || "database error");
+                else if (result.affectedRows === 0) reject("exam not found or no changes made");
+                else resolve("exam updated successfully");
+            }
+        );
+    }).then(result => ({ result }))
+        .catch(err => ({ err }));
+};
+
+exports.deleteExam = (exam_id) => {
+    return new Promise((resolve, reject) => {
+        db.query("delete from exams where exam_id = ?", [exam_id], (err, result) => {
             if (err) reject(err.sqlMessage || "database error");
-            else if (result.affectedRows === 0) reject("subject not found or no changes made");
-            else resolve("subject updated successfully");
+            else if (result.affectedRows === 0) reject("exam not found");
+            else resolve("exam deleted successfully");
         });
     }).then(result => ({ result }))
         .catch(err => ({ err }));
 };
 
-exports.deleteSubject = (subject_id) => {
+exports.searchExamBySubjectId = (subject_id) => {
     return new Promise((resolve, reject) => {
-        db.query("delete from subjects where subject_id = ?", [subject_id], (err, result) => {
+        db.query("select * from exams where subject_id = ?", [subject_id], (err, result) => {
             if (err) reject(err.sqlMessage || "database error");
-            else if (result.affectedRows === 0) reject("subject not found");
-            else resolve("subject deleted successfully");
-        });
-    }).then(result => ({ result }))
-        .catch(err => ({ err }));
-};
-exports.searchSubjectByName = (name) => {
-    return new Promise((resolve, reject) => {
-        db.query("select * from subjects where name = ?", [name], (err, result) => {
-            if (err) reject(err.sqlMessage || "database error");
-            else if (result.length === 0) reject("subject not found");
+            else if (result.length === 0) reject("no exam found for this subject");
             else resolve(result);
         });
     }).then(result => ({ result }))
