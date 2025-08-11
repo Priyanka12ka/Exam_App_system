@@ -5,13 +5,19 @@ const AdminController = require("../controllers/Admin/Admin.js");
 const Schedulercontroller=require("../controllers/Admin/SchedulController.js");
 const ExamController=require("../controllers/Admin/ExamController.js");
 const SubjectController=require("../controllers/Admin/SubjectController.js");
-const QuestionController=require("../controllers/Admin/QuestionController.js")
+const QuestionController=require("../controllers/Admin/QuestionController.js");
+const Questionsetcontroller =require("../controllers/Admin/QuestionSetController.js");
+const EvaluateStudAns=require("../controllers/Admin/EvaluateStudentans.js");
+const AssignQuestionToQuestionSet=require("../controllers/Admin/AssignQuestionTo_QueSet.js");
 
 const Schedulerouter=express.Router();
 const AdminRouter = express.Router();
 const ExamRouter=express.Router();
 const SubjectRouter=express.Router();
 const QuestionRouter=express.Router();
+const QuestionSetRouter=express.Router();
+const EvaluateAnsRouter=express.Router();
+const AssignQueToQueSet=express.Router();
 
 
 AdminRouter.post("/login", AdminController.adminLogin);
@@ -44,4 +50,17 @@ QuestionRouter.put("/updatequestion" ,verifyadmin,QuestionController.updateQuest
 QuestionRouter.delete("/deletequestion",verifyadmin,QuestionController.deleteQuestion);
 QuestionRouter.post("/searchquestion", verifyadmin, QuestionController.searchQuestionByName);
 
-module.exports ={ AdminRouter,Schedulerouter,ExamRouter ,SubjectRouter,QuestionRouter};
+QuestionSetRouter.post("/addquestionset", verifyadmin, Questionsetcontroller.addQuestionSet);
+QuestionSetRouter.get("/getallquestionset", verifyadmin, Questionsetcontroller.getAllQuestionSets);
+QuestionSetRouter.post("/getquestionsetbyid", verifyadmin, Questionsetcontroller.getQuestionSetById);
+QuestionSetRouter.delete("/deletequestionset", verifyadmin, Questionsetcontroller.deleteQuestionSet);
+QuestionSetRouter.put("/updateQuestionset", verifyadmin, Questionsetcontroller.updateQuestionSet);
+
+EvaluateAnsRouter.post("/evaluateanswers", verifyadmin, EvaluateStudAns.saveAnswer);
+
+
+AssignQueToQueSet.post("/addquetoqueset",verifyadmin, AssignQuestionToQuestionSet.addQuestionToSet);
+AssignQueToQueSet.get("/getqueinset",verifyadmin ,AssignQuestionToQuestionSet.getQuestionsInSet);
+AssignQueToQueSet.delete("/deletequestionfromset", verifyadmin, AssignQuestionToQuestionSet.removeQuestionFromSet);
+
+module.exports ={ AdminRouter,Schedulerouter,ExamRouter ,SubjectRouter,QuestionRouter, QuestionSetRouter, EvaluateAnsRouter,AssignQueToQueSet};

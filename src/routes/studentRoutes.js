@@ -11,5 +11,6 @@ studentrouter.post("/login", studentController.loginStudent);
 
 
 studentprofilerouter.get("/view", verifystudent, viewprofilecontroller.viewprofile);
+studentprofilerouter.get("/update",verifystudent,viewprofilecontroller.updatestudentprofile);
 
 module.exports = { studentrouter ,studentprofilerouter};

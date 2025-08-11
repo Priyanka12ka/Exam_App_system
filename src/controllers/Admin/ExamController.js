@@ -12,7 +12,7 @@ exports.addExam = async (req, res) => {
 };
 
 exports.getAllExams = async (req, res) => {
-    const response = await ExamModel.viewExams();
+    const response = await ExamModel.getAllExams();
 
     if ("result" in response) {
         res.status(200).json({ data: response.result });

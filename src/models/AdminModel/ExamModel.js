@@ -10,7 +10,7 @@ exports.addExam = (subject_id, total_marks, per_question_marks) => {
             [subject_id, total_marks, per_question_marks],
             (err, result) => {
                 if (err) {
-                    // 👇 Handle foreign key constraint error
+                    //  Handle foreign key constraint error
                     if (err.code === "ER_NO_REFERENCED_ROW_2") {
                         reject("subject_id does not exist in the subjects table");
                     } else {
