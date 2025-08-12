@@ -1,79 +1,81 @@
 const db = require("../../../db.js");
+const jwt = require("jsonwebtoken");
+
 
 exports.checkStudentExists = (email, username) => {
   return new Promise((resolve, reject) => {
-    const sql = ("select * from students where email = ? or username = ?", [email, username], (err, result) => {
+    const sql = "select * from students where email = ? or username = ?";
+    db.query(sql, [email, username], (err, result) => {
       if (err) reject(err);
       else resolve(result);
     });
   });
 };
 
-exports.registerStudent = (name, contact, email, username, password) => {
+exports.registerStudent = (contact, email, username, password) => {
   return new Promise((resolve, reject) => {
-    db.query("insert into students values ('0',?,?,?,?,?)", [name, contact, email, username, password], (err, result) => {
+    const sql = "insert into students (stud_id, username, email, contact, password) values (0, ?, ?, ?, ?)";
+    db.query(sql, [username, email, contact, password], (err, result) => {
       if (err) {
         console.log(err);
-        if (err.code == "ER_DUP_ENTRY") {
+        if (err.code === "ER_DUP_ENTRY") {
           reject(email + " is duplicate entry");
-        } 
-        else if(err.code=="ER_NO_SUCH_TABLE")
-          {
-            reject("table not exist");
-          }else {
+        } else {
           reject(err.sqlMessage);
         }
-
-      }
-      else {
+      } else {
         if (result.affectedRows > 0) {
-          resolve("inserted add data");
-        }
-        else {
+
+          resolve("insert data");
+        } else {
+
           reject("not registered");
         }
       }
-    })
+    });
   })
-  .then((result)=>{
-    console.log(result);
-    return {"result":result}
+  .then((msg) => {
+    return { result: msg };
   })
-  .catch((err)=>
-  {
+  .catch((err) => {
     console.log(err);
-    return {"err":err}
-  })
-}
+    return { err: err };
+  });
+};
+
 
 exports.loginStudent = (username, password) => {
   return new Promise((resolve, reject) => {
-     db.query("select * from students where username=? ", [username] ,(err, result) => {
+    db.query("select * from students where username=? ", [username], (err, result) => {
       if (err) {
-        console.log(err);
-          reject({"msg":"User Not Found" ,"isfound":false});
     
+        reject({ "msg": "User Not Found", "isfound": false });
+
       }
       else {
-       if(result[0].password==password)
-       {
-       resolve({"msg" : result[0], "isFound" :  true})
-       }
-       else{
-        reject({"msg":"password is wrong" ,"isFound":true})
-        
-       }
+        if (result.length == 0) {
+          reject({ "msg": "user not present", "isFound": false });
+        }
+        else if (result[0].password == password) {
+          let token = jwt.sign(result[0], process.env.JWT_SECRET, { expiresIn: '30d' });
+         
+          resolve({ "msg": result[0], "isFound": true, "token": token });
+        }
+        else {
+
+          reject({ "msg": "password is wrong", "isFound": true })
+
+        }
 
       }
     })
   })
-  .then((result)=>{
-    console.log(result);
-    return {"result":result}
-  })
-  .catch((err)=>
-  {
-    console.log(err);
-    return {"err":err}
-  })
-}
+    .then((result) => {
+      console.log(result);
+      return { "result": result }
+    })
+    .catch((err) => {
+      console.log(err);
+      return { "err": err }
+    })
+} 
