@@ -11,14 +11,16 @@ exports.addSubject = async (req, res) => {
     }
 };
 
-exports.viewSubjects = async (req, res) => {
-    const response = await SubjectModel.viewSubjects();
+exports.getAllSubjects = async (req, res) => {
+    const response = await SubjectModel.getAllSubjects();
+    
     if ("result" in response) {
         res.status(200).json({ data: response.result });
     } else {
         res.status(500).json({ msg: response.err });
     }
 };
+
 exports.getsubjectbyid=async(req,res)=>
 {
     const subject_id=req.body.subject_id;

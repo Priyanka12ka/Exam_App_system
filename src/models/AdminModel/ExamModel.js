@@ -1,4 +1,4 @@
-// models/examModel.js
+
 const db = require("../../../db.js");
 
 
@@ -56,11 +56,7 @@ exports.getExamById = (exam_id) => {
 // Update Exam
 exports.updateExam = (exam_id, subject_id, total_marks, per_question_marks) => {
     return new Promise((resolve, reject) => {
-        const query = `
-            update exams
-            set subject_id = ?, total_marks = ?, per_question_marks = ?
-            where exam_id = ?
-        `;
+        const query = "update exams set subject_id = ?, total_marks = ?, per_question_marks = ? where exam_id = ?";
 
         db.query(query, [subject_id, total_marks, per_question_marks, exam_id], (err, result) => {
             if (err) return reject(err.sqlMessage || "database error");

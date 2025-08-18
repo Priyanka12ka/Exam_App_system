@@ -22,7 +22,7 @@ exports.checkEmailExists = (email, password) => {
                      
                 }
                 else {
-                    reject({ "msg": "password wrong", "isfound": true });
+                    reject({ "msg": "You are entering Wrong Password", "isfound": true });
                 }
 
             }

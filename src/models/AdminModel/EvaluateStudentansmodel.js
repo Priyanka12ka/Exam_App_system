@@ -13,7 +13,6 @@ function saveStudentAnswer(result_id, question_id, student_answer, callback) {
       const isCorrect =
         student_answer.trim().toLowerCase() === correctAnswer.trim().toLowerCase()? 1: 0;
 
-      // check if already exists
       db.query(
         "Select * from studentanswerentries where result_id = ? and question_id = ?",
         [result_id, question_id],

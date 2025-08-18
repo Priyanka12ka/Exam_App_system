@@ -9,6 +9,7 @@ const QuestionController=require("../controllers/Admin/QuestionController.js");
 const Questionsetcontroller =require("../controllers/Admin/QuestionSetController.js");
 const EvaluateStudAns=require("../controllers/Admin/EvaluateStudentans.js");
 const AssignQuestionToQuestionSet=require("../controllers/Admin/AssignQuestionTo_QueSet.js");
+const Resultcontroller=require("../controllers/Admin/ResultGeneratecontroller.js");
 
 const Schedulerouter=express.Router();
 const AdminRouter = express.Router();
@@ -18,7 +19,7 @@ const QuestionRouter=express.Router();
 const QuestionSetRouter=express.Router();
 const EvaluateAnsRouter=express.Router();
 const AssignQueToQueSet=express.Router();
-
+const ResultRoutes=express.Router();
 
 AdminRouter.post("/login", AdminController.adminLogin);
 
@@ -37,7 +38,7 @@ ExamRouter.put("/updateexam",verifyadmin,ExamController.updateExam);
 ExamRouter.delete("/deleteexam",verifyadmin, ExamController.deleteExam);
 
 SubjectRouter.post("/addsubject",verifyadmin,SubjectController.addSubject);
-SubjectRouter.get("/viewsubject",verifyadmin,SubjectController.viewSubjects);
+SubjectRouter.get("/getallsubject",verifyadmin,SubjectController.getAllSubjects);
 SubjectRouter.get("/getsubjectbyid",verifyadmin,SubjectController.getsubjectbyid);
 SubjectRouter.put("/updatesubject",verifyadmin,SubjectController.updateSubject);
 SubjectRouter.delete("/deletesubject",verifyadmin,SubjectController.deleteSubject);
@@ -63,4 +64,6 @@ AssignQueToQueSet.post("/addquetoqueset",verifyadmin, AssignQuestionToQuestionSe
 AssignQueToQueSet.get("/getqueinset",verifyadmin ,AssignQuestionToQuestionSet.getQuestionsInSet);
 AssignQueToQueSet.delete("/deletequestionfromset", verifyadmin, AssignQuestionToQuestionSet.removeQuestionFromSet);
 
-module.exports ={ AdminRouter,Schedulerouter,ExamRouter ,SubjectRouter,QuestionRouter, QuestionSetRouter, EvaluateAnsRouter,AssignQueToQueSet};
+ResultRoutes.post("/createresult", verifyadmin, Resultcontroller.getResultByStudentId);
+
+module.exports ={ AdminRouter,Schedulerouter,ExamRouter ,SubjectRouter,QuestionRouter, QuestionSetRouter, EvaluateAnsRouter,AssignQueToQueSet,ResultRoutes};

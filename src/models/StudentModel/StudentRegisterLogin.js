@@ -12,20 +12,20 @@ exports.checkStudentExists = (email, username) => {
   });
 };
 
-exports.registerStudent = (contact, email, username, password) => {
+exports.registerStudent = (username, contact, email, password ) => {
   return new Promise((resolve, reject) => {
     const sql = "insert into students (stud_id, username, email, contact, password) values (0, ?, ?, ?, ?)";
     db.query(sql, [username, email, contact, password], (err, result) => {
       if (err) {
         console.log(err);
         if (err.code === "ER_DUP_ENTRY") {
-          reject(email + " is duplicate entry");
+          reject("You Are Already Registered");
         } else {
           reject(err.sqlMessage);
         }
       } else {
         if (result.affectedRows > 0) {
-          resolve("insert data");
+          resolve("Student Register Successfulyy!!!!");
         } else {
           reject("not registered");
         }
@@ -69,11 +69,11 @@ exports.loginStudent = (username, password) => {
     })
   })
     .then((result) => {
-      console.log(result);
+      
       return { "result": result }
     })
     .catch((err) => {
-      console.log(err);
+   
       return { "err": err }
     })
 } 
