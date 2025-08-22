@@ -15,19 +15,16 @@ exports.addQuestionToSet = async (req, res) => {
 
 
 exports.getQuestionsInSet = async (req, res) => {
-    const { setID } = req.body;   
-
-    if (!setID) {
-        return res.status(400).json({ msg: "setID is required in request body" });
-    }
-
-    let response = await setQuestionEntryModel.getQuestionsInSet(setID);
-
-    if ("result" in response) {
-        res.status(200).json({ data: response.result });
-    } else {
-        res.status(404).json({ msg: response.err });
-    }
+  const { setID } = req.query;
+  if (!setID) {
+    return res.status(400).json({ msg: "setID is required in query params" });
+  }
+  let response = await setQuestionEntryModel.getQuestionsInSet(setID);
+  if ("result" in response) {
+    res.status(200).json({ data: response.result });
+  } else {
+    res.status(404).json({ msg: response.err });
+  }
 };
 
 exports.removeQuestionFromSet = async (req, res) => {
