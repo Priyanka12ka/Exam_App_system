@@ -1,8 +1,9 @@
 const ExamModel = require("../../models/AdminModel/ExamModel.js");
 
+// Add Exam
 exports.addExam = async (req, res) => {
-    const { subject_id, total_marks, per_question_marks } = req.body;
-    const response = await ExamModel.addExam(subject_id, total_marks, per_question_marks);
+    const { title, subject_id, total_marks, per_question_marks } = req.body;
+    const response = await ExamModel.addExam(title, subject_id, total_marks, per_question_marks);
 
     if ("result" in response) {
         res.status(201).json({ msg: response.result });
@@ -11,6 +12,7 @@ exports.addExam = async (req, res) => {
     }
 };
 
+// Get All Exams
 exports.getAllExams = async (req, res) => {
     const response = await ExamModel.getAllExams();
 
@@ -21,6 +23,7 @@ exports.getAllExams = async (req, res) => {
     }
 };
 
+// Get Exam By ID
 exports.getExamById = async (req, res) => {
     const { exam_id } = req.body;
     const response = await ExamModel.getExamById(exam_id);
@@ -32,9 +35,10 @@ exports.getExamById = async (req, res) => {
     }
 };
 
+// Update Exam
 exports.updateExam = async (req, res) => {
-    const { exam_id, subject_id, total_marks, per_question_marks } = req.body;
-    const response = await ExamModel.updateExam(exam_id, subject_id, total_marks, per_question_marks);
+    const { exam_id, title, subject_id, total_marks, per_question_marks } = req.body;
+    const response = await ExamModel.updateExam(exam_id, title, subject_id, total_marks, per_question_marks);
 
     if ("result" in response) {
         res.status(200).json({ msg: response.result });
