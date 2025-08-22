@@ -12,33 +12,33 @@ exports.checkStudentExists = (email, username) => {
   });
 };
 
-exports.registerStudent = (contact, email, username, password) => {
+exports.registerStudent = (username, contact, email, password) => {
   return new Promise((resolve, reject) => {
     const sql = "insert into students (stud_id, username, email, contact, password) values (0, ?, ?, ?, ?)";
     db.query(sql, [username, email, contact, password], (err, result) => {
       if (err) {
-        console.log(err);
+     
         if (err.code === "ER_DUP_ENTRY") {
-          reject(email + " is duplicate entry");
+          reject("You Are Already Registered");
         } else {
           reject(err.sqlMessage);
         }
       } else {
         if (result.affectedRows > 0) {
-          resolve("insert data");
+          resolve("Student Register Successfulyy!!!!");
         } else {
           reject("not registered");
         }
       }
     });
   })
-  .then((msg) => {
-    return { result: msg };
-  })
-  .catch((err) => {
-    console.log(err);
-    return { err: err };
-  });
+    .then((msg) => {
+      return { result: msg };
+    })
+    .catch((err) => {
+      console.log(err);
+      return { err: err };
+    });
 };
 
 
@@ -46,7 +46,7 @@ exports.loginStudent = (username, password) => {
   return new Promise((resolve, reject) => {
     db.query("select * from students where username=? ", [username], (err, result) => {
       if (err) {
-    
+
         reject({ "msg": "User Not Found", "isfound": false });
 
       }
@@ -55,10 +55,18 @@ exports.loginStudent = (username, password) => {
           reject({ "msg": "user not present", "isFound": false });
         }
         else if (result[0].password == password) {
-          let token = jwt.sign(result[0], process.env.JWT_SECRET, { expiresIn: '30d' });
-         
-          resolve({ "msg": result[0], "isFound": true, "token": token });
+          const payload = {
+            stud_id: result[0].stud_id,  
+            username: result[0].username,
+            email: result[0].email,
+            role: "student"
+          };
+
+          let token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '30d' });
+          resolve({ msg: result[0], isFound: true, token: token });
         }
+
+
         else {
 
           reject({ "msg": "password is wrong", "isFound": true })
@@ -69,11 +77,11 @@ exports.loginStudent = (username, password) => {
     })
   })
     .then((result) => {
-      console.log(result);
+
       return { "result": result }
     })
     .catch((err) => {
-      console.log(err);
+
       return { "err": err }
     })
 } 

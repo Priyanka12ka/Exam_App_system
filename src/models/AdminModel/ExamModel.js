@@ -1,16 +1,13 @@
-// models/examModel.js
 const db = require("../../../db.js");
 
-
-
-exports.addExam = (subject_id, total_marks, per_question_marks) => {
+// Add Exam
+exports.addExam = (title, subject_id, total_marks, per_question_marks) => {
     return new Promise((resolve, reject) => {
         db.query(
-            "insert into exams (subject_id, total_marks, per_question_marks) values (?, ?, ?)",
-            [subject_id, total_marks, per_question_marks],
+            "INSERT INTO exams (title, subject_id, total_marks, per_question_marks) VALUES (?, ?, ?, ?)",
+            [title, subject_id, total_marks, per_question_marks],
             (err, result) => {
                 if (err) {
-                    //  Handle foreign key constraint error
                     if (err.code === "ER_NO_REFERENCED_ROW_2") {
                         reject("subject_id does not exist in the subjects table");
                     } else {
@@ -22,15 +19,16 @@ exports.addExam = (subject_id, total_marks, per_question_marks) => {
             }
         );
     })
-    .then((result) => ({ result }))
-    .catch((err) => ({ err }));
+    .then(result => ({ result }))
+    .catch(err => ({ err }));
 };
 
-
-// Get All Exams
+// Get All Exams (joined with subject name for clarity)
 exports.getAllExams = () => {
     return new Promise((resolve, reject) => {
-        db.query("select * from exams", (err, result) => {
+        const query = `
+            SELECT e.exam_id, e.title, e.subject_id, s.name AS subject_name,e.total_marks, e.per_question_marks FROM exams e LEFT JOIN subjects s ON e.subject_id = s.subject_id `;
+        db.query(query, (err, result) => {
             if (err) return reject(err.sqlMessage || "database error");
             if (result.length === 0) return reject("no exams found");
             resolve(result);
@@ -40,10 +38,17 @@ exports.getAllExams = () => {
     .catch(err => ({ err }));
 };
 
+
 // Get Exam by ID
 exports.getExamById = (exam_id) => {
     return new Promise((resolve, reject) => {
-        db.query("select * from exams where exam_id = ?", [exam_id], (err, result) => {
+        const query = `
+            SELECT e.exam_id, e.title, s.name AS subject_name, 
+                   e.total_marks, e.per_question_marks 
+            FROM exams e
+            JOIN subjects s ON e.subject_id = s.subject_id
+            WHERE e.exam_id = ?`;
+        db.query(query, [exam_id], (err, result) => {
             if (err) return reject(err.sqlMessage || "database error");
             if (result.length === 0) return reject("exam not found");
             resolve(result[0]);
@@ -54,15 +59,13 @@ exports.getExamById = (exam_id) => {
 };
 
 // Update Exam
-exports.updateExam = (exam_id, subject_id, total_marks, per_question_marks) => {
+exports.updateExam = (exam_id, title, subject_id, total_marks, per_question_marks) => {
     return new Promise((resolve, reject) => {
         const query = `
-            update exams
-            set subject_id = ?, total_marks = ?, per_question_marks = ?
-            where exam_id = ?
-        `;
-
-        db.query(query, [subject_id, total_marks, per_question_marks, exam_id], (err, result) => {
+            UPDATE exams 
+            SET title = ?, subject_id = ?, total_marks = ?, per_question_marks = ? 
+            WHERE exam_id = ?`;
+        db.query(query, [title, subject_id, total_marks, per_question_marks, exam_id], (err, result) => {
             if (err) return reject(err.sqlMessage || "database error");
             if (result.affectedRows === 0) return reject("exam not found");
             resolve("exam updated successfully");
@@ -75,7 +78,7 @@ exports.updateExam = (exam_id, subject_id, total_marks, per_question_marks) => {
 // Delete Exam
 exports.deleteExam = (exam_id) => {
     return new Promise((resolve, reject) => {
-        db.query("delete from exams where exam_id = ?", [exam_id], (err, result) => {
+        db.query("DELETE FROM exams WHERE exam_id = ?", [exam_id], (err, result) => {
             if (err) return reject(err.sqlMessage || "database error");
             if (result.affectedRows === 0) return reject("exam not found");
             resolve("exam deleted successfully");

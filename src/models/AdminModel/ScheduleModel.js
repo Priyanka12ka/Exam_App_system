@@ -1,10 +1,9 @@
 const db = require("../../../db.js");
 
-
 exports.addSchedule = (date, start_time, end_time, exam_id, setID) => {
     return new Promise((resolve, reject) => {
         db.query(
-            "insert into schedule values('0', ?, ?, ?, ?, ?)",
+            "insert into schedule (date, start_time, end_time, exam_id, setID) values (?, ?, ?, ?, ?)",
             [date, start_time, end_time, exam_id, setID],
             (err, result) => {
                 if (err) {
@@ -27,16 +26,24 @@ exports.addSchedule = (date, start_time, end_time, exam_id, setID) => {
     .catch(err => ({ err }));
 };
 
-
 exports.getAllSchedules = () => {
     return new Promise((resolve, reject) => {
-        db.query("select * from schedule", (err, result) => {
-            if (err) {
-                reject(err.sqlMessage || "database error");
-            } else {
-                resolve(result);
+        db.query(
+            `SELECT 
+                s.schedule_id,
+                DATE_FORMAT(s.date, '%Y-%m-%d') as date,
+                s.start_time,
+                s.end_time,
+                s.exam_id,
+                s.setID,
+                e.title as exam_title
+             FROM schedule s 
+             JOIN exams e ON s.exam_id = e.exam_id`,
+            (err, result) => {
+                if (err) reject(err.sqlMessage || "database error");
+                else resolve(result);
             }
-        });
+        );
     })
     .then(result => ({ result }))
     .catch(err => ({ err }));
@@ -44,15 +51,15 @@ exports.getAllSchedules = () => {
 
 exports.getScheduleById = (schedule_id) => {
     return new Promise((resolve, reject) => {
-        db.query("select * from schedule where schedule_id = ?", [schedule_id], (err, result) => {
-            if (err) {
-                reject(err.sqlMessage || "database error");
-            } else if (result.length === 0) {
-                reject("schedule not found");
-            } else {
-                resolve(result[0]);
+        db.query(
+            "SELECT schedule_id, DATE_FORMAT(date, '%Y-%m-%d') as date, start_time, end_time, exam_id, setID FROM schedule WHERE schedule_id = ?",
+            [schedule_id],
+            (err, result) => {
+                if (err) reject(err.sqlMessage || "database error");
+                else if (result.length === 0) reject("schedule not found");
+                else resolve(result[0]);
             }
-        });
+        );
     })
     .then(result => ({ result }))
     .catch(err => ({ err }));
@@ -83,35 +90,29 @@ exports.updateSchedule = (schedule_id, date, start_time, end_time, exam_id, setI
     .catch(err => ({ err }));
 };
 
-
 exports.deleteSchedule = (schedule_id) => {
     return new Promise((resolve, reject) => {
         db.query("delete from schedule where schedule_id = ?", [schedule_id], (err, result) => {
-            if (err) {
-                reject(err.sqlMessage || "database error");
-            } else if (result.affectedRows === 0) {
-                reject("schedule not found");
-            } else {
-                resolve("schedule deleted successfully");
-            }
+            if (err) reject(err.sqlMessage || "database error");
+            else if (result.affectedRows === 0) reject("schedule not found");
+            else resolve("schedule deleted successfully");
         });
     })
     .then(result => ({ result }))
     .catch(err => ({ err }));
 };
 
-
 exports.searchScheduleByDate = (date) => {
     return new Promise((resolve, reject) => {
-        db.query("select * from schedule where date = ?", [date], (err, result) => {
-            if (err) {
-                reject(err.sqlMessage || "database error");
-            } else if (result.length === 0) {
-                reject("no schedules found for the given date");
-            } else {
-                resolve(result);
+        db.query(
+            "SELECT schedule_id, DATE_FORMAT(date, '%Y-%m-%d') as date, start_time, end_time, exam_id, setID FROM schedule WHERE date = ?",
+            [date],
+            (err, result) => {
+                if (err) reject(err.sqlMessage || "database error");
+                else if (result.length === 0) reject("no schedules found for the given date");
+                else resolve(result);
             }
-        });
+        );
     })
     .then(result => ({ result }))
     .catch(err => ({ err }));
